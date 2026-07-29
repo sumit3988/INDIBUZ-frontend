@@ -121,6 +121,15 @@ export function renderProducts() {
       .filter-list li { margin-bottom: 10px; cursor: pointer; color: var(--charcoal); }
       .filter-list li:hover { color: var(--forest-deep); font-weight: 600; }
       .filter-list li.active { color: var(--forest-deep); font-weight: bold; text-decoration: underline; }
+      .products-layout { display: grid; grid-template-columns: 280px 1fr; gap: 40px; align-items: start; }
+      .mobile-filter-btn { display: none; width: 100%; padding: 14px; background: var(--cream); color: var(--forest-deep); border: 1px solid var(--gold); border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; }
+      .mobile-filter-btn:hover { background: var(--gold); color: white; }
+      @media (max-width: 991px) {
+        .products-layout { grid-template-columns: 1fr; gap: 24px; }
+        .sidebar { display: none; margin-top: 20px; }
+        .sidebar.show { display: block; }
+        .mobile-filter-btn { display: flex; }
+      }
     </style>
     <!-- Page Hero -->
     <section class="page-hero">
@@ -138,11 +147,16 @@ export function renderProducts() {
 
     <!-- Products Content -->
     <section class="products-page section">
-      <div class="container" style="display:grid; grid-template-columns: 280px 1fr; gap: 40px; align-items: start;">
+      <div class="container products-layout">
         
         <!-- Sidebar Filters -->
-        <aside class="sidebar">
-            <input type="text" id="search-input" class="search-box" placeholder="Search products..." autocomplete="off">
+        <div>
+          <button id="mobile-filter-toggle" class="mobile-filter-btn">
+             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+             Search & Filter
+          </button>
+          <aside class="sidebar" id="products-sidebar">
+              <input type="text" id="search-input" class="search-box" placeholder="Search products..." autocomplete="off">
             <div id="autocomplete-suggestions" style="position:absolute; background:#fff; border:1px solid #ccc; width:230px; display:none; z-index:10; border-radius:4px; max-height:200px; overflow-y:auto; box-shadow:0 4px 6px rgba(0,0,0,0.1);"></div>
             
             <h3 class="filter-title">Categories</h3>
@@ -154,7 +168,8 @@ export function renderProducts() {
             <ul class="filter-list" id="brand-filter-list">
                 <li data-val="" class="active">All Brands</li>
             </ul>
-        </aside>
+          </aside>
+        </div>
 
         <!-- Product Grid -->
         <div id="products-content">
@@ -175,6 +190,14 @@ export function initProductTabs() {
   const grid = document.getElementById('main-products-grid');
   const searchInput = document.getElementById('search-input');
   const suggestionsBox = document.getElementById('autocomplete-suggestions');
+  
+  const filterToggle = document.getElementById('mobile-filter-toggle');
+  const sidebar = document.getElementById('products-sidebar');
+  if (filterToggle && sidebar) {
+      filterToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('show');
+      });
+  }
   
   let currentCategory = '';
   let currentBrand = '';
